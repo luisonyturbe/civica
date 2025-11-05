@@ -100,27 +100,7 @@
             border-color: #4f46e5; /* border-indigo-600 */
             background-color: #e0e7ff; /* bg-indigo-100 */
         }
-        /* Estilo para el placeholder de video */
-        .video-placeholder {
-            width: 100%;
-            max-width: 720px;
-            margin-left: auto;
-            margin-right: auto;
-            border-radius: 0.5rem;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            margin-bottom: 2rem;
-            background-color: #e5e7eb; /* Gris claro */
-            aspect-ratio: 16 / 9; /* Proporción 16:9 */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .video-placeholder::after {
-            content: "Video Placeholder";
-            font-weight: 600;
-            color: #6b7280; /* Gris oscuro */
-            font-size: 1.25rem;
-        }
+        /* Estilo para el placeholder de video ELIMINADO */
 
     </style>
 </head>
@@ -147,8 +127,11 @@
                             title: 'Construyo mi identidad',
                             content: `
                                 <div class="prose prose-custom" id="topic-text-identidad">
-                                    <!-- Reproductor de Video Placeholder -->
-                                    <div class="video-placeholder"></div>
+                                    <!-- Reproductor de Video -->
+                                    <video class="w-full max-w-[720px] mx-auto rounded-lg shadow-md mb-8" controls preload="metadata">
+                                        <source src="https://luisonyturbe.github.io/civica/identidad.mov" type="video/mp4">
+                                        Tu navegador no soporta el tag de video.
+                                    </video>
                                     
                                     <h2>¿Quién Soy? La Identidad Personal</h2>
                                     <p>La <strong>identidad personal</strong> es el conjunto de rasgos o características que nos conforman como individuos únicos y nos diferencian de los demás. Esta identidad se construye durante la infancia, adolescencia y juventud.</p>
@@ -197,8 +180,11 @@
                             title: 'Cuido y ejerzo mi derecho a la salud',
                             content: `
                                 <div class="prose prose-custom" id="topic-text-salud">
-                                    <!-- Reproductor de Video Placeholder -->
-                                    <div class="video-placeholder"></div>
+                                    <!-- Reproductor de Video -->
+                                    <video class="w-full max-w-[720px] mx-auto rounded-lg shadow-md mb-8" controls preload="metadata">
+                                        <source src="https://luisonyturbe.github.io/civica/salud.mov" type="video/mp4">
+                                        Tu navegador no soporta el tag de video.
+                                    </video>
 
                                     <h2>Pilares del Bienestar en la Adolescencia</h2>
                                     <p>La adolescencia es una etapa de transformación y aprendizaje. Para un desarrollo integral, son clave los siguientes conceptos:</p>
@@ -238,8 +224,11 @@
                             title: 'Comunidades vulnerables',
                             content: `
                                 <div class="prose prose-custom" id="topic-text-comunidades">
-                                    <!-- Reproductor de Video Placeholder -->
-                                    <div class="video-placeholder"></div>
+                                    <!-- Reproductor de Video -->
+                                    <video class="w-full max-w-[720px] mx-auto rounded-lg shadow-md mb-8" controls preload="metadata">
+                                        <source src="https://luisonyturbe.github.io/civica/derechos.mov" type="video/mp4">
+                                        Tu navegador no soporta el tag de video.
+                                    </video>
 
                                     <h2>La Dignidad Humana como Base</h2>
                                     <p>La <strong>Dignidad Humana</strong> es el concepto fundamental de los derechos humanos. Sostiene que cada individuo, <strong>simplemente por ser humano, posee un valor inherente</strong> e inalienable que debe ser respetado.</p>
@@ -304,8 +293,11 @@
                             title: 'Movimientos sociales',
                             content: `
                                 <div class="prose prose-custom" id="topic-text-movimientos">
-                                    <!-- Reproductor de Video Placeholder -->
-                                    <div class="video-placeholder"></div>
+                                    <!-- Reproductor de Video -->
+                                    <video class="w-full max-w-[720px] mx-auto rounded-lg shadow-md mb-8" controls preload="metadata">
+                                        <source src="https://luisonyturbe.github.io/civica/movimientos.mov" type="video/mp4">
+                                        Tu navegador no soporta el tag de video.
+                                    </video>
 
                                     <h2>Los Derechos Humanos</h2>
                                     <p>Los <strong>Derechos Humanos</strong> son el conjunto de facultades y reconocimientos jurídicos, éticos y morales sustentados en la <strong>dignidad humana</strong>. Son indispensables para el desarrollo integral.</p>
