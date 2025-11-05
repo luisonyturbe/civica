@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía de Estudio</title> <!-- Título cambiado -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .topic-card {
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .topic-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .quiz-option-btn {
+            transition: background-color 0.2s, transform 0.2s, border-color 0.2s, box-shadow 0.2s, opacity 0.2s;
+        }
+        .quiz-option-btn:not(:disabled):hover {
+            transform: scale(1.02);
+        }
+        .prose-custom {
+            max-width: 80ch;
+        }
+        .prose-custom h2 {
+            font-size: 1.875rem; /* 30px */
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            margin-top: 2.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e5e7eb;
+            color: #1f2937;
+        }
+        .prose-custom h3 {
+            font-size: 1.5rem; /* 24px */
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: #374151;
+        }
+        .prose-custom p, .prose-custom li {
+            margin-bottom: 1rem;
+            line-height: 1.7;
+            color: #4b5563;
+            font-size: 1.125rem; /* 18px */
+        }
+        .prose-custom ul {
+            list-style-type: disc;
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+         .prose-custom li {
+            margin-bottom: 0.5rem;
+            padding-left: 0.5rem;
+         }
+        .prose-custom strong {
+            color: #111827; /* Más oscuro para énfasis */
+            font-weight: 600;
+        }
+        /* Estilo para las tablas */
+        .prose-custom table {
+            width: 100%;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-collapse: collapse;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            overflow: hidden;
+            border-radius: 0.5rem;
+        }
+        .prose-custom th, .prose-custom td {
+            border: 1px solid #d1d5db;
+            padding: 0.75rem 1rem;
+            text-align: left;
+            vertical-align: top;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+        .prose-custom th {
+            background-color: #f9fafb;
+            font-weight: 700;
+            color: #1f2937;
+        }
+        .prose-custom tr:nth-child(even) {
+            background-color: #f9fafb;
+        }
+        .modal {
+            display: flex;
+        }
+        /* Estilos para el botón de quiz seleccionado */
+        .quiz-option-btn.selected {
+            --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+            --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(4px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+            box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
+            --tw-ring-color: rgb(129 140 248 / 0.75); /* ring-indigo-400 ring-opacity-75 */
+            border-color: #4f46e5; /* border-indigo-600 */
+            background-color: #e0e7ff; /* bg-indigo-100 */
+        }
+        /* Estilo para el placeholder de video */
+        .video-placeholder {
+            width: 100%;
+            max-width: 720px;
+            margin-left: auto;
+            margin-right: auto;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            background-color: #e5e7eb; /* Gris claro */
+            aspect-ratio: 16 / 9; /* Proporción 16:9 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .video-placeholder::after {
+            content: "Video Placeholder";
+            font-weight: 600;
+            color: #6b7280; /* Gris oscuro */
+            font-size: 1.25rem;
+        }
+
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <div id="app">
+        <!-- Las páginas se renderizarán aquí -->
+    </div>
+
+    <script>
+        const appConfig = {
+            data() {
+                return {
+                    currentPage: 'home',
+                    currentTopic: null,
+                    quizType: null,
+                    questions: [],
+                    currentQuestionIndex: 0,
+                    score: 0,
+                    userAnswers: [],
+                    selectedAnswer: null,
+                    topics: { // Contenido de los 4 temas
+                        'identidad': {
+                            title: 'Construyo mi identidad',
+                            content: `
+                                <div class="prose prose-custom" id="topic-text-identidad">
+                                    <!-- Reproductor de Video Placeholder -->
+                                    <div class="video-placeholder"></div>
+                                    
+                                    <h2>¿Quién Soy? La Identidad Personal</h2>
+                                    <p>La <strong>identidad personal</strong> es el conjunto de rasgos o características que nos conforman como individuos únicos y nos diferencian de los demás. Esta identidad se construye durante la infancia, adolescencia y juventud.</p>
+
+                                    <h3>Características de la Identidad Personal</h3>
+                                    <p>Según Martin Buber, la identidad tiene al menos cuatro características clave:</p>
+                                    <ul>
+                                        <li><strong>Es relativamente estable:</strong> Permanece a lo largo de la vida, aunque con ligeros cambios.</li>
+                                        <li><strong>Se construye en un entorno social:</strong> No nos formamos en aislamiento.</li>
+                                        <li><strong>Se reafirma en la convivencia:</strong> La construyes a partir de tus gustos, deseos y afinidades con otros.</li>
+                                        <li><strong>Es influenciada:</strong> Los grupos sociales y medios de comunicación influyen, aunque cada persona elige qué tomar de ellos.</li>
+                                    </ul>
+
+                                    <h2>Género, Sexo y Roles</h2>
+                                    <h3>Sexo vs. Género</h3>
+                                    <p>Es importante diferenciar estos dos conceptos:</p>
+                                    <ul>
+                                        <li><strong>Sexo:</strong> Se refiere a las <strong>diferencias biológicas</strong> entre machos y hembras.</li>
+                                        <li><strong>Género:</strong> Es una <strong>construcción social y cultural</strong>. Son las características sociales, culturales y psicológicas que una sociedad asocia con "lo masculino" y "lo femenino".</li>
+                                    </ul>
+
+                                    <h3>Roles de Género</h3>
+                                    <p>Los <strong>roles de género</strong> son las expectativas sociales sobre cómo deben comportarse las personas según su género.</p>
+                                    <p>Tradicionalmente, esto ha limitado a las personas; por ejemplo, asignando a las mujeres el cuidado del hogar y a los hombres el papel de proveedores. Sin embargo, estos roles han cambiado y se han modificado con el tiempo, permitiendo una mayor participación de las mujeres en la vida pública y de los hombres en el hogar.</p>
+
+                                    <h3>Estereotipos de Género</h3>
+                                    <p>Un <strong>estereotipo</strong> es un modelo o guía sobre lo que la sociedad espera. Al estereotipo de "mujer ideal" u "hombre ideal" se le llama <strong>hegemónico</strong>. Seguir estos modelos ideales puede poner en riesgo la salud física, emocional y social de los adolescentes.</p>
+
+                                    <h2>Grupos de Pertenencia, Tradiciones y Costumbres</h2>
+                                    <h3>Grupos de Pertenencia</h3>
+                                    <p>Son los grupos con los que nos identificamos y buscamos aceptación. Hay grupos que no elegimos (como la <strong>familia</strong>) y otros que sí (como <strong>amigos</strong> o equipos deportivos).</p>
+                                    <p>Algunas expresiones juveniles, a veces llamadas <strong>"tribus urbanas"</strong> (como góticos, punks, gamers, etc.), son grupos de pertenencia que expresan su identidad con estilos propios.</p>
+                                    
+                                    <h3>Tradiciones y Costumbres</h3>
+                                    <ul>
+                                        <li><strong>Tradiciones:</strong> Prácticas culturales heredadas de una generación a otra (ej. fiestas, cultos). Nos dan sentido de origen.</li>
+                                        <li><strong>Costumbres:</strong> Prácticas que se vuelven hábitos por su repetición (ej. celebrar ciertas fiestas, cómo vestir en un funeral).</li>
+                                    </ul>
+
+                                    <h3>Símbolos</h3>
+                                    <p>Son expresiones de ideas que evocan valores o creencias (ej. la bandera, una cruz, una playera de un grupo). Dan identidad y sentido de pertenencia.</p>
+                                </div>
+                            `
+                        },
+                        'salud': {
+                            title: 'Cuido y ejerzo mi derecho a la salud',
+                            content: `
+                                <div class="prose prose-custom" id="topic-text-salud">
+                                    <!-- Reproductor de Video Placeholder -->
+                                    <div class="video-placeholder"></div>
+
+                                    <h2>Pilares del Bienestar en la Adolescencia</h2>
+                                    <p>La adolescencia es una etapa de transformación y aprendizaje. Para un desarrollo integral, son clave los siguientes conceptos:</p>
+
+                                    <h3>Autoestima y Autocuidado</h3>
+                                    <ul>
+                                        <li><strong>Autoestima:</strong> Es la valoración que tenemos de nosotros mismos. Juega un papel clave en la salud integral. Se gesta en la familia, al reconocer nuestras capacidades y retos.</li>
+                                        <li><strong>Riesgos de baja autoestima:</strong> Una baja autoestima puede llevar a manipulación, rechazo, violencia en el noviazgo, abuso sexual o consumo de drogas.</li>
+                                        <li><strong>Autocuidado:</strong> Es una manifestación de la autoestima. Cuando nos estimamos, nos cuidamos. Están interconectados: cuidarte sube tu autoestima, y una buena autoestima te motiva a cuidarte.</li>
+                                    </ul>
+
+                                    <h3>Asertividad y Autorregulación</h3>
+                                    <p>Muchos adolescentes empiezan a consumir sustancias por "pertenecer a un grupo", lo que muestra una falta de asertividad.</p>
+                                    <ul>
+                                        <li><strong>Asertividad:</strong> Es la habilidad para <strong>expresar pensamientos, emociones y defender derechos</strong> de forma honesta, directa y respetuosa, sin ser agresivo. Demuestra dignidad y confianza.</li>
+                                        <li><strong>Autorregulación:</strong> Permite darnos cuenta de obstáculos o situaciones que ponen en riesgo nuestra integridad o metas. Una persona autorregulada <strong>evita acciones problemáticas</strong> aunque sienta el deseo de realizarlas.</li>
+                                    </ul>
+                                    <p>Ambas habilidades (asertividad y autorregulación) te permiten <strong>decir "no"</strong> a situaciones de riesgo, como el consumo de drogas.</p>
+
+                                    <h2>Derecho a la Salud y Prevención</h2>
+                                    <h3>El Derecho a la Salud Integral</h3>
+                                    <p>La <strong>salud integral</strong>, según la OMS, es un estado de completo <strong>bienestar físico, mental y social</strong>. La salud es un derecho humano universal.</p>
+                                    <p>El <strong>Estado tiene la obligación</strong> de protegerte y garantizar tu derecho a la salud, incluyendo el acceso a servicios médicos.</p>
+
+                                    <h3>Adicciones y Drogas</h3>
+                                    <p>Una <strong>adicción</strong> es una dependencia física, psicológica y emocional hacia una sustancia, actividad o relación.</p>
+                                    <ul>
+                                        <li><strong>Drogas Legales:</strong> Aunque su venta a menores está prohibida, el alcohol y el tabaco causan graves problemas de salud.</li>
+                                        <li><strong>Drogas Ilegales:</strong> Sustancias como la marihuana, cocaína, fentanilo, etc., limitan el desarrollo físico y mental.</li>
+                                        <li><strong>Adicto vs. Consumo ocasional:</strong> Un adicto tiene un consumo constante y crónico, con dependencia y necesidad de dosis mayores, no solo por consumir una vez.</li>
+                                    </ul>
+                                    <p>El consumo de drogas daña la salud física y mental, pero también causa problemas sociales, familiares y puede vincularse con actos de violencia y delincuencia.</p>
+                                </div>
+                            `
+                        },
+                        'comunidades': {
+                            title: 'Comunidades vulnerables',
+                            content: `
+                                <div class="prose prose-custom" id="topic-text-comunidades">
+                                    <!-- Reproductor de Video Placeholder -->
+                                    <div class="video-placeholder"></div>
+
+                                    <h2>La Dignidad Humana como Base</h2>
+                                    <p>La <strong>Dignidad Humana</strong> es el concepto fundamental de los derechos humanos. Sostiene que cada individuo, <strong>simplemente por ser humano, posee un valor inherente</strong> e inalienable que debe ser respetado.</p>
+                                    <p>La Declaración Universal de los Derechos Humanos dice: "Todos los seres humanos nacen libres e iguales en dignidad y derechos".</p>
+                                    
+                                    <h3>Aspectos Clave de la Dignidad</h3>
+                                    <ul>
+                                        <li><strong>Igualdad:</strong> Todos somos iguales en valor intrínseco. Nadie debe ser discriminado.</li>
+                                        <li><strong>Autonomía:</strong> La capacidad de tomar decisiones libres sobre la propia vida (pensamiento, conciencia, expresión).</li>
+                                        <li><strong>Integridad:</strong> Respeto a la integridad física y psicológica. Prohíbe la tortura o el trato inhumano.</li>
+                                        <li><strong>Trato Digno:</strong> Ser tratado con respeto, consideración y justicia en todas las interacciones.</li>
+                                    </ul>
+
+                                    <h2>Marginación y Vulnerabilidad</h2>
+                                    <h3>¿Qué es la Marginación?</h3>
+                                    <p>La <strong>marginación</strong> es la <strong>exclusión</strong> o relegación de personas o grupos a un estatus social, económico o político inferior.</p>
+                                    <p>Se manifiesta como un acceso limitado a la educación, atención médica, empleo, vivienda y participación política. Afecta a grupos como minorías étnicas, personas con discapacidad, migrantes, mujeres, personas de bajos ingresos, etc..</p>
+
+                                    <h3>Factores que Contribuyen a la Marginación</h3>
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Factor</th>
+                                                <th>Descripción</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td><strong>Discriminación</strong></td>
+                                                <td>Negación de oportunidades o trato justo por etnia, género, orientación sexual, religión, etc.</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Desigualdad Económica</strong></td>
+                                                <td>Mala distribución de la riqueza que provoca menos acceso a empleo, educación y salud.</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Barreras Estructurales</strong></td>
+                                                <td>Segregación en la vivienda, falta de representación política (ej. zonas sin agua potable o internet).</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Estigmatización Social</strong></td>
+                                                <td>Aislar a grupos percibidos como "diferentes" (ej. por orientación sexual).</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Falta de Acceso a Servicios</strong></td>
+                                                <td>Falta de atención médica o educación de calidad (ej. en zonas rurales).</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                    <h3>Grupos en Situación de Vulnerabilidad</h3>
+                                    <p>La vulnerabilidad es una mayor exposición a riesgos. El texto destaca tres tipos:</p>
+                                    <ul>
+                                        <li><strong>Vulnerabilidad Infantil:</strong> Niños, niñas y adolescentes son vulnerables por su dependencia de los adultos.</li>
+                                        <li><strong>Vulnerabilidad de Género:</strong> Mujeres y personas de género diverso enfrentan desigualdades y discriminación.</li>
+                                        <li><strong>Vulnerabilidad Económica:</strong> Personas en situación de pobreza con falta de acceso a servicios básicos.</li>
+                                    </ul>
+                                </div>
+                            `
+                        },
+                        'movimientos': {
+                            title: 'Movimientos sociales',
+                            content: `
+                                <div class="prose prose-custom" id="topic-text-movimientos">
+                                    <!-- Reproductor de Video Placeholder -->
+                                    <div class="video-placeholder"></div>
+
+                                    <h2>Los Derechos Humanos</h2>
+                                    <p>Los <strong>Derechos Humanos</strong> son el conjunto de facultades y reconocimientos jurídicos, éticos y morales sustentados en la <strong>dignidad humana</strong>. Son indispensables para el desarrollo integral.</p>
+                                    <p>Sus características son: <strong>inherentes, imprescriptibles, universales, progresivos, indivisibles, inalienables e inviolables</strong>. No se otorgan, se reconocen.</p>
+
+                                    <h3>Formas de Violentar los Derechos Humanos</h3>
+                                    <p>Solo los agentes del Estado (autoridades, policía, militares) pueden violentar los derechos humanos. Lo pueden hacer de tres formas:</p>
+                                    <ul>
+                                        <li><strong>Por Acción:</strong> Cuando se ataca directamente la dignidad (detenciones arbitrarias, tortura, ejecuciones).</li>
+                                        <li><strong>Por Omisión:</strong> Cuando el gobierno muestra <strong>indiferencia</strong> ante situaciones que vulneran la dignidad.</li>
+                                        <li><strong>Por Aquiescencia:</strong> Cuando el Estado da <strong>consentimiento directo</strong> para que grupos (como paramilitares) cometan agresiones, secuestros o asesinatos.</li>
+                                    </ul>
+
+                                    <h2>Movimientos Sociales y Políticos</h2>
+                                    <h3>¿Qué es un Movimiento Social?</h3>
+                                    <p>Un <strong>Movimiento Social</strong> es una forma de <strong>acción colectiva</strong> de la ciudadanía. Expresan valores e ideologías frente al <strong>descontento e inconformidad</strong> con un gobierno. Se movilizan para evidenciar y poner fin a las injusticias y exigir el respeto a sus derechos.</p>
+
+                                    <h3>Movimiento Social vs. Movimiento Político</h3>
+                                    <ul>
+                                        <li><strong>Movimiento Social:</strong> Busca visibilizar problemas, exigir derechos y frenar injusticias (ej. estudiantes, mujeres, trabajadores).</li>
+                                        <li><strong>Movimiento Político:</strong> Su fin primordial es <strong>alcanzar el poder político</strong> para llevar a cabo mejoras desde el gobierno.</li>
+                                    </ul>
+
+                                    <h2>Tipos de Gobierno</h2>
+                                    <p>El texto describe tres tipos de gobierno, comunes en América Latina durante el siglo XX:</p>
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Tipo</th>
+                                                <th>Característica Principal</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td><strong>Democráticos</strong></td>
+                                                <td>La ciudadanía <strong>participa</strong> en la toma de decisiones y ejerce sus derechos y libertades.</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Autoritarios</strong></td>
+                                                <td><strong>Reprimen y sancionan a los opositores</strong> y evitan sus expresiones en público.</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Totalitarios</strong></td>
+                                                <td>Buscan <strong>eliminar las formas de pensamiento opuestas</strong>, mediante el adoctrinamiento y la propaganda.</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                    <h3>Movimientos en México</h3>
+                                    <p>En México, tras la Revolución, un partido gobernó por más de 70 años, imponiendo decisiones por la fuerza y la represión. Las represiones a médicos, ferrocarrileros y estudiantes (1968) son ejemplos de esto. El uso del ejército para detenciones, desapariciones y tortura en esa época se conoce como <strong>"Guerra Sucia"</strong>.</p>
+                                </div>
+                            `
+                        }
+                    },
+                    quizQuestions: {
+                        // 5 preguntas del tema 1
+                        'identidad': [
+                            { q: "¿Qué es la identidad personal?", a: ["Un grupo de amigos", "Un conjunto de rasgos que nos hacen únicos", "Las tradiciones de un país", "El género masculino o femenino"], c: 1 },
+                            { q: "Según el texto, ¿cuál NO es una característica de la identidad personal?", a: ["Es relativamente estable", "Se construye en un entorno social", "Es completamente fija y no cambia nunca", "Se reafirma en la convivencia"], c: 2 },
+                            { q: "¿Cuál es la diferencia principal entre 'sexo' y 'género'?", a: ["No hay diferencia", "Sexo es biológico y género es una construcción social", "Sexo es social y género es biológico", "Sexo se refiere a los roles y género a la identidad"], c: 1 },
+                            { q: "¿Cómo se le llama al estereotipo de 'mujer ideal' u 'hombre ideal' que sirve como guía en la sociedad?", a: ["Subalterno", "Marginado", "Hegemónico", "Tradicional"], c: 2 },
+                            { q: "Los 'góticos', 'punks' o 'gamers' son ejemplos de:", a: ["Grupos de pertenencia o 'tribus urbanas'", "Roles de género", "Símbolos nacionales", "Costumbres familiares"], c: 0 }
+                        ],
+                        // 5 preguntas del tema 2
+                        'salud': [
+                            { q: "¿Qué habilidad permite expresar pensamientos y defender derechos de forma honesta y respetuosa, sin ser agresivo?", a: ["Autorregulación", "Autoestima", "Asertividad", "Autocuidado"], c: 2 },
+                            { q: "Identificar situaciones de riesgo y evitar acciones que pueden traer problemas, aunque se desee realizarlas, es un ejemplo de:", a: ["Asertividad", "Autorregulación", "Baja autoestima", "Adicción"], c: 1 },
+                            { q: "Según la OMS, la salud integral incluye el bienestar físico, social y...", a: ["Económico", "Religioso", "Político", "Mental"], c: 3 },
+                            { q: "El texto menciona que la baja autoestima puede colocar a los adolescentes en situaciones de riesgo, como:", a: ["Tener buenas calificaciones", "Ser más asertivo", "Consumo de drogas o violencia en el noviazgo", "Practicar el autocuidado"], c: 2 },
+                            { q: "¿Qué es una adicción, según la OMS?", a: ["Un consumo ocasional de una droga", "Una dependencia física, psicológica y emocional", "Solo el consumo de drogas ilegales", "Una moda adolescente"], c: 1 }
+                        ],
+                        // 5 preguntas del tema 3
+                        'comunidades': [
+                            { q: "¿Qué concepto fundamental sostiene que cada individuo posee un valor inherente solo por ser humano?", a: ["Marginación", "Dignidad humana", "Vulnerabilidad", "Desigualdad económica"], c: 1 },
+                            { q: "La exclusión de personas a un estatus social, económico o político inferior, limitando su acceso a educación y salud, se llama:", a: ["Marginación", "Dignidad", "Autonomía", "Estigmatización"], c: 0 },
+                            { q: "¿Cuál de estos es un factor que contribuye a la marginación?", a: ["La igualdad de oportunidades", "El trato digno", "La discriminación y las barreras estructurales", "La autonomía personal"], c: 2 },
+                            { q: "¿Cuáles son los aspectos clave de la dignidad humana mencionados en el texto?", a: ["Riqueza, poder y fama", "Igualdad, autonomía, integridad y trato digno", "Religión, etnia y género", "Marginación y exclusión"], c: 1 },
+                            { q: "La 'vulnerabilidad de género' se refiere a:", a: ["Que los niños dependen de los adultos", "La falta de acceso a servicios por pobreza", "Las desigualdades y discriminación que enfrentan mujeres y personas de género diverso", "La falta de amigos"], c: 2 }
+                        ],
+                        // 5 preguntas del tema 4
+                        'movimientos': [
+                            { q: "¿Cómo se le llama a la forma de violentar los derechos humanos cuando el gobierno muestra indiferencia ante situaciones que vulneran la dignidad?", a: ["Por acción", "Por aquiescencia", "Por omisión", "Por represión"], c: 2 },
+                            { q: "¿Cuál es el objetivo principal de un movimiento social?", a: ["Alcanzar el poder político", "Expresar descontento y movilizarse por derechos y contra injusticias", "Ganar dinero para sus miembros", "Organizar fiestas y eventos"], c: 1 },
+                            { q: "¿Cuál es el objetivo principal de un movimiento político?", a: ["Alcanzar el poder político", "Protestar en la calle", "Defender el medio ambiente", "Crear arte"], c: 0 },
+                            { q: "Un gobierno que reprime a los opositores y evita sus expresiones en público es de tipo:", a: ["Democrático", "Totalitario", "Autoritario", "Parlamentario"], c: 2 },
+                            { q: "Un gobierno que busca eliminar formas de pensamiento opuestas mediante el adoctrinamiento y propaganda es:", a: ["Democrático", "Totalitario", "Autoritario", "Social"], c: 1 }
+                        ]
+                    }
+                };
+            },
+            methods: {
+                
+                // --- Renderizado de Páginas ---
+                navigate(page, topic = null) {
+                    this.currentPage = page;
+                    this.currentTopic = topic;
+                    window.scrollTo(0, 0);
+                    this.renderPage();
+                },
+                startQuiz(type) {
+                    this.quizType = type;
+                    this.currentQuestionIndex = 0;
+                    this.score = 0;
+                    this.userAnswers = [];
+                    this.selectedAnswer = null; 
+
+                    if (type === 'all') {
+                        let allQuestions = [];
+                        Object.keys(this.quizQuestions).forEach(topic => {
+                            this.quizQuestions[topic].forEach(q => {
+                                allQuestions.push({ ...q, topic: topic });
+                            });
+                        });
+                        // Baraja las 20 preguntas y las selecciona
+                        this.questions = this.shuffleArray(allQuestions).slice(0, 20);
+                    } else {
+                        // (Lógica de quiz por tema, actualmente no usada por la interfaz principal)
+                        const topicQuestions = this.quizQuestions[type].map(q => ({...q, topic: type}));
+                        this.questions = this.shuffleArray(topicQuestions);
+                    }
+                    this.currentPage = 'quiz-active';
+                    this.renderPage();
+                },
+                selectAnswer(choiceIndex) {
+                    this.selectedAnswer = choiceIndex;
+                    this.renderPage(); 
+                },
+                nextQuestion() {
+                    if (this.selectedAnswer === null) return; 
+
+                    const currentQuestion = this.questions[this.currentQuestionIndex];
+                    const isCorrect = this.selectedAnswer === currentQuestion.c;
+                    if (isCorrect) {
+                        this.score++;
+                    }
+                    this.userAnswers.push({
+                        question: currentQuestion.q,
+                        answer: currentQuestion.a[this.selectedAnswer],
+                        correctAnswer: currentQuestion.a[currentQuestion.c],
+                        isCorrect: isCorrect,
+                        topic: currentQuestion.topic
+                    });
+
+                    this.selectedAnswer = null; 
+
+                    if (this.currentQuestionIndex < this.questions.length - 1) {
+                        this.currentQuestionIndex++;
+                    } else {
+                        this.currentPage = 'quiz-results';
+                    }
+                    this.renderPage();
+                },
+                getResultsFeedback() { 
+                    if (this.quizType !== 'all') return '';
+                    const incorrectAnswers = this.userAnswers.filter(a => !a.isCorrect);
+                    if (incorrectAnswers.length === 0) {
+                        return '<p class="text-green-600 font-semibold">¡Excelente trabajo! Puntuación perfecta. Tienes un gran dominio de todos los temas.</p>';
+                    }
+                    const topicErrors = {};
+                    incorrectAnswers.forEach(answer => {
+                        const topicTitle = this.topics[answer.topic] ? this.topics[answer.topic].title : answer.topic;
+                        if (!topicErrors[topicTitle]) topicErrors[topicTitle] = 0;
+                        topicErrors[topicTitle]++;
+                    });
+                    
+                    // Sugerir repaso si hay 2 o más errores en un tema
+                    const weakAreas = Object.keys(topicErrors).filter(topicTitle => topicErrors[topicTitle] >= 2);
+                    
+                    if (weakAreas.length > 0) {
+                        let feedback = '<p class="font-semibold text-lg mb-2">Sugerencias:</p><p>Basado en tus resultados, te recomendamos repasar los siguientes temas:</p><ul class="list-disc list-inside mt-2 text-left">';
+                        weakAreas.forEach(topicTitle => {
+                            feedback += `<li class="capitalize">${topicTitle}</li>`;
+                        });
+                        feedback += '</ul><p class="mt-2">¡Considera repasar las guías de estudio!</p>';
+                        return feedback;
+                    }
+                    return '<p>¡Buen trabajo! Tienes un entendimiento sólido. Revisa las preguntas que fallaste para afinar tu conocimiento.</p>';
+                },
+                shuffleArray(array) { 
+                    for (let i = array.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        [array[i], array[j]] = [array[j], array[i]];
+                    }
+                    return array;
+                },
+                renderPage() {
+                    const appEl = document.getElementById('app');
+                    
+                    switch (this.currentPage) {
+                        case 'home': appEl.innerHTML = this.HomePage(); break;
+                        case 'topic': appEl.innerHTML = this.TopicPage(); break;
+                        case 'quiz': appEl.innerHTML = this.QuizPage(); break;
+                        case 'quiz-active': appEl.innerHTML = this.QuizActivePage(); break;
+                        case 'quiz-results': appEl.innerHTML = this.QuizResultsPage(); break;
+                        default: appEl.innerHTML = this.HomePage();
+                    }
+                     this.addEventListeners();
+                },
+                addEventListeners() {
+                     // Función auxiliar para añadir listeners evitando duplicados
+                    const removeAndAdd = (selector, event, handlerKey, handlerFn) => {
+                         document.querySelectorAll(selector).forEach(el => {
+                            const oldHandler = el[`__${handlerKey}`];
+                            if (oldHandler) el.removeEventListener(event, oldHandler);
+                            el.addEventListener(event, handlerFn);
+                            el[`__${handlerKey}`] = handlerFn;
+                        });
+                    };
+                    
+                    removeAndAdd('[data-navigate]', 'click', 'handleNavigate', (e) => {
+                        const page = e.currentTarget.getAttribute('data-navigate');
+                        const topic = e.currentTarget.getAttribute('data-topic');
+                        window.app.navigate(page, topic);
+                    });
+
+                    removeAndAdd('[data-quiz-start]', 'click', 'handleQuizStart', (e) => {
+                        const type = e.currentTarget.getAttribute('data-quiz-start');
+                        window.app.startQuiz(type);
+                    });
+
+                    removeAndAdd('[data-answer]', 'click', 'handleSelectAnswer', (e) => {
+                         const choiceIndex = parseInt(e.currentTarget.getAttribute('data-answer'));
+                        window.app.selectAnswer(choiceIndex);
+                    });
+
+                    // Botones únicos
+                    const nextBtn = document.getElementById('next-question-btn');
+                    if (nextBtn) {
+                         const handlerKey = 'handleNextQuestion';
+                         const oldHandler = nextBtn[`__${handlerKey}`];
+                         if (oldHandler) nextBtn.removeEventListener('click', oldHandler);
+                         const newHandler = () => window.app.nextQuestion();
+                         nextBtn.addEventListener('click', newHandler);
+                         nextBtn[`__${handlerKey}`] = newHandler;
+                    }
+                },
+                HomePage() { 
+                    let topicCards = '';
+                    for (const key in this.topics) {
+                        topicCards += `
+                        <div class="bg-white rounded-lg shadow-md p-6 topic-card cursor-pointer" data-navigate="topic" data-topic="${key}">
+                            <h3 class="text-xl font-semibold text-gray-800">${this.topics[key].title}</h3>
+                        </div>`;
+                    }
+
+                    return `
+                        <div class="min-h-screen bg-gray-100">
+                            <header class="bg-white shadow-md">
+                                <div class="container mx-auto px-6 py-6">
+                                    <h1 class="text-4xl font-bold text-center text-gray-800">Guía de Estudio</h1>
+                                    <p class="text-center text-gray-600 mt-2 text-lg">Tu recurso de estudio para el examen.</p>
+                                </div>
+                            </header>
+                            <main class="container mx-auto px-6 py-12">
+                                <h2 class="text-2xl font-semibold text-center mb-8">Temas de Estudio</h2>
+                                <div class="grid md:grid-cols-2 lg:grid-cols-2 gap-8"> <!-- Cambiado a 2 columnas -->
+                                    ${topicCards}
+                                </div>
+                                
+                                <div class="mt-12 text-center">
+                                    <button class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-8 rounded-lg shadow-lg quiz-option-btn text-xl" data-navigate="quiz">
+                                        QUIZ
+                                    </button>
+                                </div>
+                            </main>
+                        </div>
+                    `;
+                },
+                TopicPage() { 
+                    const topic = this.topics[this.currentTopic];
+                    return `
+                        <div class="min-h-screen bg-white pb-12">
+                            <header class="bg-gray-800 text-white shadow-md">
+                                <div class="container mx-auto px-6 py-4 flex justify-between items-center flex-wrap gap-4">
+                                    <h1 class="text-2xl sm:text-3xl font-bold">${topic.title}</h1>
+                                    <button class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded" data-navigate="home">
+                                        &larr; Volver al Menú
+                                    </button>
+                                </div>
+                            </header>
+                             <main class="container mx-auto px-6 py-12">
+                                ${topic.content}
+                            </main>
+                        </div>
+                    `;
+                },
+                QuizPage() { 
+                    // Modificado para mostrar solo el botón de "Examen General"
+                    return `
+                         <div class="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4">
+                            <div class="w-full max-w-2xl text-center">
+                                 <h1 class="text-4xl font-bold text-gray-800 mb-2">Zona de Pruebas</h1>
+                                 <p class="text-gray-600 mb-8 text-lg">Demuestra lo que has aprendido. El quiz general contiene 20 preguntas de todos los temas.</p>
+                                <div class="space-y-4">
+                                     <button class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-6 rounded-lg shadow-lg quiz-option-btn w-full text-lg" data-quiz-start="all">
+                                         Iniciar QUIZ (20 Preguntas)
+                                     </button>
+                                </div>
+                                <button class="mt-8 text-indigo-600 hover:text-indigo-800 font-semibold" data-navigate="home">
+                                    &larr; Volver al Menú Principal
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                },
+                QuizActivePage() { 
+                    const question = this.questions[this.currentQuestionIndex];
+                    let optionsHtml = '';
+                    question.a.forEach((option, index) => {
+                         const selectedClass = this.selectedAnswer === index ? 'selected' : '';
+                        optionsHtml += `
+                            <button class="w-full bg-white hover:bg-indigo-100 border-2 border-gray-300 hover:border-indigo-400 text-gray-800 font-semibold py-4 px-5 rounded-lg text-left transition text-lg quiz-option-btn ${selectedClass}" data-answer="${index}">
+                                ${option}
+                            </button>
+                        `;
+                    });
+
+                    const isLastQuestion = this.currentQuestionIndex === this.questions.length - 1;
+                    const buttonText = isLastQuestion ? 'Terminar Quiz' : 'Siguiente Pregunta';
+
+                    return `
+                        <div class="min-h-screen flex items-center justify-center bg-gray-100 p-4">
+                            <div class="bg-white rounded-xl shadow-2xl p-6 sm:p-8 w-full max-w-3xl">
+                                <div class="mb-6">
+                                    <p class="text-sm text-gray-500">Pregunta ${this.currentQuestionIndex + 1} de ${this.questions.length}</p>
+                                    <div class="bg-gray-200 rounded-full h-2.5 mt-2">
+                                        <div class="bg-indigo-600 h-2.5 rounded-full" style="width: ${((this.currentQuestionIndex + 1) / this.questions.length) * 100}%"></div>
+                                    </div>
+                                </div>
+                                <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-8">${question.q}</h2>
+                                <div class="space-y-4">
+                                    ${optionsHtml}
+                                </div>
+                                <div class="mt-8 text-right">
+                                    <button id="next-question-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-lg quiz-option-btn ${this.selectedAnswer === null ? 'opacity-50 cursor-not-allowed' : ''}" ${this.selectedAnswer === null ? 'disabled' : ''}>
+                                        ${buttonText} &rarr;
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                },
+                QuizResultsPage() { 
+                    let resultsHtml = '';
+                    this.userAnswers.forEach(answer => {
+                        resultsHtml += `
+                            <div class="p-4 rounded-lg ${answer.isCorrect ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'} border">
+                                <p class="font-semibold text-gray-800 text-lg">${answer.question}</p>
+                                <p class="text-md ${answer.isCorrect ? 'text-green-700' : 'text-red-700'}">Tu respuesta: ${answer.answer}</p>
+                                ${!answer.isCorrect ? `<p class="text-md text-green-700">Respuesta correcta: ${answer.correctAnswer}</p>` : ''}
+                            </div>
+                        `;
+                    });
+
+                    const feedbackHtml = this.getResultsFeedback();
+                    
+                    // Botón de IA eliminado
+                    return `
+                        <div class="min-h-screen bg-gray-100 p-4 sm:p-6 md:p-8">
+                            <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-6 sm:p-8">
+                                <h1 class="text-4xl font-bold text-center text-gray-800">Resultados del Quiz</h1>
+                                <div class="text-center my-6">
+                                    <p class="text-xl text-gray-600">Tu puntuación</p>
+                                    <p class="text-7xl font-bold text-indigo-600">${this.score} / ${this.questions.length}</p>
+                                </div>
+                                
+                                ${this.quizType === 'all' ? `<div class="bg-blue-50 border-l-4 border-blue-400 p-6 rounded-r-lg my-8 text-center">${feedbackHtml}</div>` : ''}
+
+                                <h2 class="text-2xl font-semibold mt-8 mb-5">Revisa tus Respuestas:</h2>
+                                <div class="space-y-4">
+                                    ${resultsHtml}
+                                </div>
+                                <div class="mt-8 flex flex-col sm:flex-row justify-center items-center gap-4 flex-wrap">
+                                    <button class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-lg quiz-option-btn w-full sm:w-auto" data-quiz-start="${this.quizType}">
+                                        Intentar de Nuevo
+                                    </button>
+                                     <button class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-6 rounded-lg quiz-option-btn w-full sm:w-auto" data-navigate="quiz">
+                                         Elegir otro Quiz
+                                     </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+            },
+            mounted() {
+                this.renderPage();
+            }
+        };
+
+        // Simulación de un montaje simple tipo "Vanilla JS"
+        (function(config) {
+            const app = {};
+            // Copiar data
+            Object.assign(app, config.data());
+            // Vincular métodos
+            for (const methodName in config.methods) {
+                app[methodName] = config.methods[methodName].bind(app);
+            }
+            // Asignar al objeto global
+            window.app = app;
+            // Llamar a mounted
+            config.mounted.call(app);
+
+             // Re-definir addEventListeners 
+            app.addEventListeners = function() {
+                const removeAndAdd = (selector, event, handlerKey, handlerFn) => {
+                     document.querySelectorAll(selector).forEach(el => {
+                        const oldHandler = el[`__${handlerKey}`];
+                        if (oldHandler) el.removeEventListener(event, oldHandler);
+                        el.addEventListener(event, handlerFn);
+                        el[`__${handlerKey}`] = handlerFn;
+                    });
+                };
+                
+                removeAndAdd('[data-navigate]', 'click', 'handleNavigate', (e) => {
+                    window.app.navigate(e.currentTarget.getAttribute('data-navigate'), e.currentTarget.getAttribute('data-topic'));
+                });
+
+                removeAndAdd('[data-quiz-start]', 'click', 'handleQuizStart', (e) => {
+                    window.app.startQuiz(e.currentTarget.getAttribute('data-quiz-start'));
+                });
+
+                removeAndAdd('[data-answer]', 'click', 'handleSelectAnswer', (e) => {
+                     window.app.selectAnswer(parseInt(e.currentTarget.getAttribute('data-answer')));
+                });
+
+                // Botones únicos
+                const nextBtn = document.getElementById('next-question-btn');
+                if (nextBtn) {
+                     const handlerKey = 'handleNextQuestion';
+                     const oldHandler = nextBtn[`__${handlerKey}`];
+                     if (oldHandler) nextBtn.removeEventListener('click', oldHandler);
+                     const newHandler = () => window.app.nextQuestion();
+                     nextBtn.addEventListener('click', newHandler);
+                     nextBtn[`__${handlerKey}`] = newHandler;
+                }
+            };
+
+            // Re-renderizar después de la configuración inicial
+            app.renderPage();
+
+        })(appConfig);
+    </script>
+</body>
+</html>
